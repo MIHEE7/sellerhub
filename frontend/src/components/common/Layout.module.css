@@ -1,0 +1,77 @@
+.shell { display: flex; height: 100vh; overflow: hidden; }
+
+/* SIDEBAR */
+.sidebar {
+  width: 240px; flex-shrink: 0;
+  background: var(--surface);
+  border-right: 0.5px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow-y: auto;
+}
+.logo { padding: 16px; border-bottom: 0.5px solid var(--border); }
+.logoTitle { font-size: 14px; font-weight: 600; color: var(--text); }
+.logoSub   { font-size: 10px; color: var(--hint); margin-top: 2px; }
+
+.secLabel {
+  font-size: 9px; text-transform: uppercase; letter-spacing: .07em;
+  color: var(--hint); padding: 12px 14px 4px; font-weight: 600;
+}
+
+.navItem {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 14px; cursor: pointer;
+  font-size: 12px; color: var(--muted);
+  transition: background .1s;
+}
+.navItem:hover { background: var(--bg); color: var(--text); }
+.navIcon  { font-size: 14px; flex-shrink: 0; }
+.navLabel { flex: 1; }
+.navBadge {
+  font-size: 10px; font-weight: 600;
+  padding: 1px 6px; border-radius: 8px; min-width: 18px; text-align: center;
+}
+
+/* PLATFORM GROUPS */
+.platGroup { border-top: 0.5px solid var(--border); }
+.platHeader {
+  display: flex; align-items: center; gap: 7px;
+  padding: 8px 14px 4px; cursor: pointer;
+}
+.platIco {
+  width: 20px; height: 20px; border-radius: 5px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700; flex-shrink: 0;
+}
+.platName  { font-size: 11px; font-weight: 600; color: var(--muted); flex: 1; }
+.platCount { font-size: 10px; font-weight: 600; }
+.platAccts { }
+.acctItem {
+  display: flex; align-items: center; gap: 7px;
+  padding: 5px 14px 5px 40px;
+  font-size: 11px; color: var(--hint);
+  cursor: pointer; transition: background .1s;
+}
+.acctItem:hover { background: var(--bg); color: var(--text); }
+.acctDot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+
+/* BOTTOM NAV */
+.bottomNav {
+  margin-top: auto;
+  border-top: 0.5px solid var(--border);
+  padding: 8px 0;
+}
+.navLink {
+  display: block; padding: 7px 14px;
+  font-size: 12px; color: var(--muted);
+  text-decoration: none; transition: background .1s;
+}
+.navLink:hover, .navLink.active { background: var(--bg); color: var(--text); }
+.logoutBtn {
+  display: block; width: 100%; padding: 7px 14px;
+  font-size: 12px; color: var(--hint);
+  background: none; border: none; text-align: left;
+}
+.logoutBtn:hover { color: #E24B4A; }
+
+/* MAIN */
+.main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }

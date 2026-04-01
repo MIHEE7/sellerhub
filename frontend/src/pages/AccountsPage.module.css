@@ -1,0 +1,96 @@
+.page { padding: 20px 24px; overflow-y: auto; }
+.head { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
+.title { font-size: 16px; font-weight: 600; color: var(--text); }
+.sub   { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.addBtn {
+  font-size: 12px; padding: 8px 16px; border-radius: 8px;
+  border: 0.5px solid rgba(0,0,0,.15); background: var(--surface);
+  color: var(--text); font-weight: 600;
+}
+.addBtn:hover { background: var(--bg); }
+
+.platSection { margin-bottom: 24px; }
+.platHead { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.platIco  { width: 22px; height: 22px; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; }
+.platName { font-size: 13px; font-weight: 600; color: var(--text); flex: 1; }
+.apiLink  { font-size: 11px; color: var(--blue); cursor: pointer; }
+
+.cardGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+
+.acctCard { background: var(--surface); border-radius: 10px; padding: 14px; border: 0.5px solid var(--border); }
+.acctCard.ok    { border-top: 2px solid #3B6D11; }
+.acctCard.error { border-top: 2px solid #E24B4A; opacity: .8; }
+
+.cardTop  { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+.cardName { font-size: 13px; font-weight: 600; color: var(--text); }
+.cardId   { font-size: 10px; color: var(--hint); margin-top: 2px; }
+.status   { display: flex; align-items: center; gap: 4px; font-size: 10px; }
+.statusDot{ width: 6px; height: 6px; border-radius: 50%; }
+
+.field     { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.fieldLbl  { font-size: 10px; color: var(--hint); width: 52px; flex-shrink: 0; }
+.fieldVal  { font-size: 11px; color: var(--muted); font-family: monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.errMsg    { font-size: 10px; color: #E24B4A; margin-bottom: 8px; line-height: 1.4; }
+
+.cardActions { display: flex; gap: 5px; margin-top: 10px; }
+.cBtn {
+  font-size: 10px; padding: 4px 10px; border-radius: 6px;
+  border: 0.5px solid var(--border); background: var(--bg); color: var(--muted);
+}
+.cBtn:hover { border-color: rgba(0,0,0,.2); color: var(--text); }
+.cBtn.danger:hover { background: #FCEBEB; color: #993C1D; border-color: #E24B4A50; }
+
+.addCard {
+  background: transparent; border: 0.5px dashed rgba(0,0,0,.2); border-radius: 10px;
+  padding: 14px; display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: var(--hint); cursor: pointer; min-height: 130px;
+}
+.addCard:hover { background: var(--bg); color: var(--text); border-style: solid; }
+
+.disabledRow { display: flex; flex-direction: column; gap: 8px; }
+.disabledItem {
+  background: var(--bg); border-radius: 8px; padding: 10px 14px;
+  font-size: 11px; color: var(--muted);
+  border: 0.5px dashed var(--border);
+}
+
+/* MODAL */
+.modalBg {
+  position: fixed; inset: 0; background: rgba(0,0,0,.35); z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+}
+.modal {
+  background: var(--surface); border-radius: 12px; border: 0.5px solid var(--border);
+  width: 420px; max-width: 95%; padding: 20px;
+}
+.modalHead { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.modalTitle { font-size: 14px; font-weight: 600; color: var(--text); }
+.modalClose { font-size: 16px; color: var(--hint); background: none; border: none; }
+.modalClose:hover { color: var(--text); }
+
+.formGroup  { margin-bottom: 13px; }
+.formRow    { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.label      { font-size: 11px; color: var(--muted); display: block; margin-bottom: 4px; }
+.input {
+  width: 100%; padding: 8px 10px; font-size: 12px;
+  border: 0.5px solid rgba(0,0,0,.2); border-radius: 7px;
+  background: var(--surface); color: var(--text); outline: none;
+}
+.input:focus { border-color: var(--blue); }
+.testRow { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+.testBtn {
+  font-size: 10px; padding: 4px 10px; border-radius: 6px;
+  border: 0.5px solid rgba(0,0,0,.2); background: var(--bg); color: var(--muted);
+}
+
+.modalFooter { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; padding-top: 14px; border-top: 0.5px solid var(--border); }
+.cancelBtn {
+  font-size: 11px; padding: 7px 14px; border-radius: 7px;
+  border: 0.5px solid var(--border); background: var(--bg); color: var(--muted);
+}
+.saveBtn {
+  font-size: 11px; padding: 7px 18px; border-radius: 7px;
+  border: none; background: var(--blue); color: #fff; font-weight: 600;
+}
+.saveBtn:hover { background: #0C447C; }
+.saveBtn:disabled { opacity: .6; }

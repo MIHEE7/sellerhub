@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>셀러 허브</title>
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      :root {
+        --bg:       #f5f5f3;
+        --surface:  #ffffff;
+        --border:   rgba(0,0,0,0.08);
+        --text:     #1a1a18;
+        --muted:    #6b6b67;
+        --hint:     #9b9b97;
+        --blue:     #185FA5;
+        --green:    #3B6D11;
+        --red:      #993C1D;
+        --amber:    #854F0B;
+        --purple:   #3C3489;
+        --radius:   10px;
+        font-family: -apple-system, 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+      }
+      body { background: var(--bg); color: var(--text); }
+      button { cursor: pointer; font-family: inherit; }
+      input, select, textarea { font-family: inherit; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
