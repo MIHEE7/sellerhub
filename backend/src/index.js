@@ -149,3 +149,6 @@ app.use((err, req, res, next) => {
     process.exit(1);
   }
 })();
+initDb().catch(err => {
+  console.error('DB init failed:', err);
+});
