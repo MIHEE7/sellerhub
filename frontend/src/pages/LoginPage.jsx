@@ -1,40 +1,45 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../store';
+import { useNavigate, Link } from 'react-router-dom';
 import api from '../services/api';
+import { useAuthStore } from '../store';
 
 export default function LoginPage() {
+  const navigate = useNavigate();
+  const { setAuth } = useAuthStore();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const setAuth = useAuthStore((s) => s.setAuth);
-  const navigate = useNavigate();
-
-  const handle = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError('');
+    setLoading(true);
 
     try {
-      const res = await api.post('/auth/login', { email, password });
+      const res = await api.post('/auth/login', {
+        email,
+        password,
+      });
 
-      const token = res?.data?.token;
-      const user = res?.data?.user;
+      const data = res?.data || {};
+      const token = data.token;
+      const user = data.user;
 
       if (!token || !user) {
-        throw new Error('로그인 응답값이 올바르지 않습니다.');
+        throw new Error('로그인 응답이 올바르지 않습니다.');
       }
 
       setAuth(token, user);
-      navigate('/settings');
+      navigate('/orders');
     } catch (err) {
       setError(
         err?.response?.data?.error ||
           err?.response?.data?.message ||
           err?.message ||
-          '로그인 실패'
+          '로그인에 실패했습니다.'
       );
     } finally {
       setLoading(false);
@@ -45,130 +50,145 @@ export default function LoginPage() {
     <div
       style={{
         minHeight: '100vh',
+        background: '#f5f6f8',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'var(--bg)',
+        padding: 24,
       }}
     >
       <div
         style={{
-          width: 380,
-          background: 'var(--surface)',
-          border: '0.5px solid var(--border)',
-          borderRadius: 14,
+          width: '100%',
+          maxWidth: 420,
+          background: '#fff',
+          borderRadius: 16,
           padding: 32,
+          border: '1px solid #e5e7eb',
+          boxShadow: '0 10px 30px rgba(0,0,0,0.05)',
         }}
       >
-        <div style={{ marginBottom: 24 }}>
-          <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--text)' }}>
-            셀러 허브
-          </div>
-          <div style={{ fontSize: 12, color: 'var(--muted)', marginTop: 4 }}>
-            멀티 오픈마켓 알림 관리
-          </div>
-        </div>
+        <h1 style={{ fontSize: 32, fontWeight: 800, marginBottom: 8 }}>로그인</h1>
+        <p style={{ color: '#6b7280', marginBottom: 24 }}>
+          셀러허브에 로그인하세요
+        </p>
 
-        <form onSubmit={handle}>
-          <div style={{ marginBottom: 12 }}>
+        <form onSubmit={handleLogin}>
+          <div style={{ marginBottom: 16 }}>
             <label
-              style={{
-                fontSize: 11,
-                color: 'var(--muted)',
-                display: 'block',
-                marginBottom: 4,
-              }}
+              htmlFor="email"
+              style={{ display: 'block', marginBottom: 8, fontWeight: 600 }}
             >
               이메일
             </label>
             <input
+              id="email"
               type="email"
-              placeholder="이메일 입력"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              placeholder="이메일 입력"
+              autoComplete="username"
               style={{
                 width: '100%',
-                padding: '9px 12px',
-                fontSize: 13,
-                border: '0.5px solid rgba(0,0,0,.2)',
-                borderRadius: 8,
-                background: 'var(--surface)',
-                color: 'var(--text)',
-                outline: 'none',
+                padding: '12px 14px',
+                borderRadius: 10,
+                border: '1px solid #d1d5db',
                 boxSizing: 'border-box',
+                fontSize: 15,
               }}
             />
           </div>
 
           <div style={{ marginBottom: 12 }}>
             <label
-              style={{
-                fontSize: 11,
-                color: 'var(--muted)',
-                display: 'block',
-                marginBottom: 4,
-              }}
+              htmlFor="password"
+              style={{ display: 'block', marginBottom: 8, fontWeight: 600 }}
             >
               비밀번호
             </label>
-            <input
-              type="password"
-              placeholder="비밀번호 입력"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '9px 12px',
-                fontSize: 13,
-                border: '0.5px solid rgba(0,0,0,.2)',
-                borderRadius: 8,
-                background: 'var(--surface)',
-                color: 'var(--text)',
-                outline: 'none',
-                boxSizing: 'border-box',
-              }}
-            />
+
+            <div style={{ position: 'relative' }}>
+              <input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="비밀번호 입력"
+                autoComplete="current-password"
+                style={{
+                  width: '100%',
+                  padding: '12px 90px 12px 14px',
+                  borderRadius: 10,
+                  border: '1px solid #d1d5db',
+                  boxSizing: 'border-box',
+                  fontSize: 15,
+                }}
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                style={{
+                  position: 'absolute',
+                  right: 10,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  border: 'none',
+                  background: 'transparent',
+                  cursor: 'pointer',
+                  color: '#2563eb',
+                  fontWeight: 700,
+                  padding: '4px 6px',
+                }}
+              >
+                {showPassword ? '가리기' : '보기'}
+              </button>
+            </div>
           </div>
 
-          <div
-            style={{
-              marginBottom: 18,
-              display: 'flex',
-              justifyContent: 'flex-end',
-            }}
-          >
+          <div style={{ marginBottom: 20, textAlign: 'right' }}>
             <Link
               to="/forgot-password"
               style={{
-                fontSize: 12,
-                color: 'var(--blue)',
+                color: '#2563eb',
                 textDecoration: 'none',
+                fontSize: 14,
+                fontWeight: 600,
               }}
             >
               비밀번호 찾기
             </Link>
           </div>
 
-          {error && (
-            <div style={{ fontSize: 11, color: '#E24B4A', marginBottom: 12 }}>
+          {error ? (
+            <div
+              style={{
+                marginBottom: 16,
+                color: '#dc2626',
+                background: '#fef2f2',
+                border: '1px solid #fecaca',
+                borderRadius: 10,
+                padding: '10px 12px',
+                fontSize: 14,
+              }}
+            >
               {error}
             </div>
-          )}
+          ) : null}
 
           <button
             type="submit"
             disabled={loading}
             style={{
               width: '100%',
-              padding: 11,
-              fontSize: 13,
-              fontWeight: 700,
+              padding: '13px 14px',
+              borderRadius: 10,
               border: 'none',
-              borderRadius: 8,
-              background: 'var(--blue)',
+              background: '#2563eb',
               color: '#fff',
-              opacity: loading ? 0.7 : 1,
-              cursor: loading ? 'not-allowed' : 'pointer',
+              fontWeight: 800,
+              fontSize: 15,
+              cursor: 'pointer',
             }}
           >
             {loading ? '로그인 중...' : '로그인'}
