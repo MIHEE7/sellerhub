@@ -1,119 +1,136 @@
-import { Outlet, NavLink, useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store';
-import { useFilterStore } from '../../store';
-import { TYPE_META, PLATFORM_META, TYPE_ORDER } from '../../types/meta';
-import api from '../../services/api';
-import s from './Layout.module.css';
 
-export default function Layout() {
-  const logout     = useAuthStore((st) => st.logout);
-  const navigate   = useNavigate();
-  const setType    = useFilterStore((st) => st.setType);
-  const setAcctId  = useFilterStore((st) => st.setAccountId);
+const navItems = [
+  { to: '/dashboard', label: '대시보드' },
+  { to: '/orders', label: '주문 수집' },
+  { to: '/market-settings', label: 'API 설정' },
+  { to: '/settings', label: '내 설정' },
+];
 
-  const { data: stats }    = useQuery({ queryKey: ['stats'],    queryFn: () => api.get('/notifications/stats'),   refetchInterval: 30_000 });
-  const { data: accounts } = useQuery({ queryKey: ['accounts'], queryFn: () => api.get('/accounts'), refetchInterval: 60_000 });
+export default function Layout({ title = '', subtitle = '', children }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuthStore();
 
-  const handleLogout = () => { logout(); navigate('/login'); };
-
-  // Group accounts by platform
-  const grouped = {};
-  (accounts || []).forEach((a) => {
-    if (!grouped[a.platform]) grouped[a.platform] = [];
-    grouped[a.platform].push(a);
-  });
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
-    <div className={s.shell}>
-      {/* ── SIDEBAR ─────────────────────────────── */}
-      <aside className={s.sidebar}>
-        <div className={s.logo}>
-          <div className={s.logoTitle}>셀러 허브</div>
-          <div className={s.logoSub}>멀티 플랫폼 알림 관리</div>
+    <div style={{ minHeight: '100vh', background: '#f5f6f8' }}>
+      <header
+        style={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 20,
+          background: '#ffffff',
+          borderBottom: '1px solid #e5e7eb',
+        }}
+      >
+        <div
+          style={{
+            maxWidth: 1200,
+            margin: '0 auto',
+            padding: '16px 20px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 16,
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
+            <Link
+              to="/dashboard"
+              style={{
+                textDecoration: 'none',
+                color: '#111827',
+                fontSize: 24,
+                fontWeight: 800,
+              }}
+            >
+              SELLERHUB
+            </Link>
+
+            <nav style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+              {navItems.map((item) => {
+                const active = location.pathname === item.to;
+                return (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    style={{
+                      textDecoration: 'none',
+                      padding: '10px 14px',
+                      borderRadius: 10,
+                      fontSize: 14,
+                      fontWeight: 700,
+                      color: active ? '#ffffff' : '#374151',
+                      background: active ? '#2563eb' : '#f3f4f6',
+                      border: active ? '1px solid #2563eb' : '1px solid #e5e7eb',
+                    }}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ fontSize: 13, color: '#6b7280' }}>로그인 사용자</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>
+                {user?.name || user?.email || '사용자'}
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleLogout}
+              style={{
+                border: 'none',
+                background: '#ef4444',
+                color: '#fff',
+                fontWeight: 800,
+                borderRadius: 10,
+                padding: '10px 14px',
+                cursor: 'pointer',
+              }}
+            >
+              로그아웃
+            </button>
+          </div>
         </div>
+      </header>
 
-        {/* 알림 유형 */}
-        <div className={s.secLabel}>알림 유형</div>
-        <NavItem icon="🔔" label="전체 알림" count={stats?.total} onClick={() => { setType('all'); setAcctId('all'); navigate('/'); }} />
-        {TYPE_ORDER.map((type) => {
-          const m = TYPE_META[type];
-          return (
-            <NavItem
-              key={type}
-              icon={m.icon}
-              label={m.label}
-              count={stats?.byType?.[type]}
-              color={m.color}
-              onClick={() => { setType(type); setAcctId('all'); navigate('/'); }}
-            />
-          );
-        })}
+      <main style={{ maxWidth: 1200, margin: '0 auto', padding: 24 }}>
+        {(title || subtitle) && (
+          <div style={{ marginBottom: 24 }}>
+            {title ? (
+              <h1
+                style={{
+                  margin: 0,
+                  fontSize: 30,
+                  fontWeight: 800,
+                  color: '#111827',
+                }}
+              >
+                {title}
+              </h1>
+            ) : null}
 
-        {/* 플랫폼·계정 */}
-        <div className={s.secLabel}>플랫폼 / 계정</div>
-        {Object.entries(grouped).map(([plat, accts]) => {
-          const pm = PLATFORM_META[plat] || { label: plat, color: '#888', bg: '#eee', short: plat[0].toUpperCase() };
-          const cnt = accts.reduce((sum, a) => sum + (stats?.byPlatform?.[plat] || 0), 0);
-          return (
-            <PlatGroup key={plat} pm={pm} label={pm.label} count={cnt}>
-              {accts.map((a) => (
-                <div
-                  key={a.id}
-                  className={s.acctItem}
-                  onClick={() => { setAcctId(a.id); setType('all'); navigate('/'); }}
-                >
-                  <span className={s.acctDot} style={{ background: a.last_error ? '#E24B4A' : pm.color }} />
-                  {a.account_name}
-                </div>
-              ))}
-            </PlatGroup>
-          );
-        })}
+            {subtitle ? (
+              <div style={{ marginTop: 8, color: '#6b7280', fontSize: 15 }}>
+                {subtitle}
+              </div>
+            ) : null}
+          </div>
+        )}
 
-        {/* 하단 메뉴 */}
-        <div className={s.bottomNav}>
-          <NavLink to="/accounts" className={({ isActive }) => `${s.navLink} ${isActive ? s.active : ''}`}>
-            계정 관리
-          </NavLink>
-          <NavLink to="/settings" className={({ isActive }) => `${s.navLink} ${isActive ? s.active : ''}`}>
-            알림 설정
-          </NavLink>
-          <button className={s.logoutBtn} onClick={handleLogout}>로그아웃</button>
-        </div>
-      </aside>
-
-      {/* ── MAIN ────────────────────────────────── */}
-      <main className={s.main}>
-        <Outlet />
+        {children}
       </main>
-    </div>
-  );
-}
-
-function NavItem({ icon, label, count, color, onClick }) {
-  return (
-    <div className={s.navItem} onClick={onClick}>
-      <span className={s.navIcon}>{icon}</span>
-      <span className={s.navLabel}>{label}</span>
-      {count > 0 && (
-        <span className={s.navBadge} style={{ background: color ? color + '20' : '#FCEBEB', color: color || '#993C1D' }}>
-          {count}
-        </span>
-      )}
-    </div>
-  );
-}
-
-function PlatGroup({ pm, label, count, children }) {
-  return (
-    <div className={s.platGroup}>
-      <div className={s.platHeader}>
-        <span className={s.platIco} style={{ background: pm.bg, color: pm.color }}>{pm.short}</span>
-        <span className={s.platName}>{label}</span>
-        {count > 0 && <span className={s.platCount} style={{ color: pm.color }}>{count}건</span>}
-      </div>
-      <div className={s.platAccts}>{children}</div>
     </div>
   );
 }

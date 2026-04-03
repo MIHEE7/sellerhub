@@ -19,11 +19,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const res = await api.post('/auth/login', {
-        email,
-        password,
-      });
-
+      const res = await api.post('/auth/login', { email, password });
       const data = res?.data || {};
       const token = data.token;
       const user = data.user;
@@ -33,7 +29,7 @@ export default function LoginPage() {
       }
 
       setAuth(token, user);
-      navigate('/orders');
+      navigate('/dashboard');
     } catch (err) {
       setError(
         err?.response?.data?.error ||
@@ -77,7 +73,7 @@ export default function LoginPage() {
           <div style={{ marginBottom: 16 }}>
             <label
               htmlFor="email"
-              style={{ display: 'block', marginBottom: 8, fontWeight: 600 }}
+              style={{ display: 'block', marginBottom: 8, fontWeight: 700 }}
             >
               이메일
             </label>
@@ -102,7 +98,7 @@ export default function LoginPage() {
           <div style={{ marginBottom: 12 }}>
             <label
               htmlFor="password"
-              style={{ display: 'block', marginBottom: 8, fontWeight: 600 }}
+              style={{ display: 'block', marginBottom: 8, fontWeight: 700 }}
             >
               비밀번호
             </label>
@@ -117,7 +113,7 @@ export default function LoginPage() {
                 autoComplete="current-password"
                 style={{
                   width: '100%',
-                  padding: '12px 90px 12px 14px',
+                  padding: '12px 80px 12px 14px',
                   borderRadius: 10,
                   border: '1px solid #d1d5db',
                   boxSizing: 'border-box',
@@ -137,7 +133,7 @@ export default function LoginPage() {
                   background: 'transparent',
                   cursor: 'pointer',
                   color: '#2563eb',
-                  fontWeight: 700,
+                  fontWeight: 800,
                   padding: '4px 6px',
                 }}
               >
@@ -153,7 +149,7 @@ export default function LoginPage() {
                 color: '#2563eb',
                 textDecoration: 'none',
                 fontSize: 14,
-                fontWeight: 600,
+                fontWeight: 700,
               }}
             >
               비밀번호 찾기
